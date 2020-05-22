@@ -66,50 +66,55 @@ def get_costs(items, sold):
     task()
 
 def export_items_to_csv(items):
-    dict_pro={}
+    dict_pro=[]    
     for i in Products:
-        dict_pro[i[0]]={}
-    for i in Products:
-        dict_pro[i[0]]={'Name':i[0], 'Amount':i[1], 'Unit': i[2], 'Price': i[3]}
-
+        dict_pro.append({'Name':i[0], 'Amount':i[1], 'Unit': i[2], 'Price': i[3]})
+    
+    print(dict_pro)
     with open('magazyn.csv', 'w', newline='') as csvfile:
-        fieldnames = ['pro_name', 'pro_info']
+        fieldnames = ['Name', 'Amount', 'Unit', 'Price']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        for i,j in dict_pro.items():
-            writer.writerow({'pro_name': i, 'pro_info': j})
+        writer.writeheader()
+        for i in dict_pro:
+            writer.writerow(i)
 
 def export_sells_to_csv(items):
-    dict_pro={}
-    for i in items:
-        dict_pro[i[0]]={}
-    for i in items:
-        dict_pro[i[0]]={i[1], i[2], i[3]}
-
+    dict_pro=[]    
+    for i in Sold_Products:
+        dict_pro.append({'Name':i[0], 'Amount':i[1], 'Unit': i[2], 'Price': i[3]})
+    
+    print(dict_pro)
     with open('sold_magazyn.csv', 'w', newline='') as csvfile:
-        fieldnames = ['pro_name', 'pro_info']
+        fieldnames = ['Name', 'Amount', 'Unit', 'Price']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        for i,j in dict_pro.items():
-            writer.writerow({i, j})
+        writer.writeheader()
+        for i in dict_pro:
+            writer.writerow(i)
     task()
 
 def load_items_from_csv():
     a=[]
-    dict_pro={}
-    with open('magazyn2.csv', newline='') as csvfile:
+    k=[]
+    with open('magazyn.csv', newline='') as csvfile:
         Products1 = csv.DictReader(csvfile)
         for row in Products1:
-            for i, j in row.items():
-                a.append(j)
-            for k, l in list(zip(*([iter(a)] * 2))):
-                dict_pro[k]=l
-    for i in dict_pro.values():
-        for key, value in i.items():
-            a.append(value)
-    for name, amount, unit, price in list(zip(*([iter(a)] * 4))):
-        Products=[name, amount, unit, price]
-    task()
+            k=[row['Name'], float(row['Amount']), row['Unit'], float(row['Price'])]
+            Products.append(k)
+    print("Successfully loaded data from magazyn.csv")
+        
+
+def load_sells_from_csv():
+    a=[]
+    k=[]
+    with open('sold_magazyn.csv', newline='') as csvfile:
+        Products1 = csv.DictReader(csvfile)
+        for row in Products1:
+            k=[row['Name'], float(row['Amount']), row['Unit'], float(row['Price'])]
+            Sold_Products.append(k)
+    print("Successfully loaded data from sold_magazyn.csv")
                  
 def task():
+    
     task = input("What would you like to do?")
     if task == 'exit':
         print("exiting program")
@@ -130,8 +135,7 @@ def task():
 
 #wywołanie programu
 if __name__ == "__main__":
+    Products.clear()
+    load_items_from_csv()
+    load_sells_from_csv()
     task()
-    
-
-
-
